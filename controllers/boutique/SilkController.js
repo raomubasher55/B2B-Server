@@ -1,7 +1,8 @@
 const Silk = require('../../models/Boutique/Silk'); 
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new Silk item
-exports.createSilk = async (req, res) => {
+exports.createSilk = asyncHandler(async (req, res) => {
     try {
         const silk = new Silk({
             ...req.body,
@@ -12,20 +13,20 @@ exports.createSilk = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get all Silk items
-exports.getAllSilks = async (req, res) => {
+exports.getAllSilks = asyncHandler(async (req, res) => {
     try {
         const silks = await Silk.find();
         res.status(200).json({ success: true, data: silks });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get a single Silk item by ID
-exports.getSilkById = async (req, res) => {
+exports.getSilkById = asyncHandler(async (req, res) => {
     try {
         const silk = await Silk.findById(req.params.id);
         if (!silk) {
@@ -35,10 +36,10 @@ exports.getSilkById = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Update a Silk item by ID
-exports.updateSilk = async (req, res) => {
+exports.updateSilk = asyncHandler(async (req, res) => {
     try {
         const silk = await Silk.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!silk) {
@@ -48,10 +49,10 @@ exports.updateSilk = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Delete a Silk item by ID
-exports.deleteSilk = async (req, res) => {
+exports.deleteSilk = asyncHandler(async (req, res) => {
     try {
         const silk = await Silk.findByIdAndDelete(req.params.id);
         if (!silk) {
@@ -61,4 +62,4 @@ exports.deleteSilk = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});

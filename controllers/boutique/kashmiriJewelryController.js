@@ -1,7 +1,8 @@
 const KashmiriJewelry = require('../../models/Boutique/kashmiriJewelry');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new Kashmiri Jewelry
-exports.createKashmiriJewelry = async (req, res) => {
+exports.createKashmiriJewelry = asyncHandler(async (req, res) => {
     try {
         const jewelry = new KashmiriJewelry({
             ...req.body,
@@ -12,20 +13,20 @@ exports.createKashmiriJewelry = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get all Kashmiri Jewelry items
-exports.getAllKashmiriJewelry = async (req, res) => {
+exports.getAllKashmiriJewelry = asyncHandler(async (req, res) => {
     try {
         const jewelry = await KashmiriJewelry.find();
         res.status(200).json({ success: true, data: jewelry });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get a single Kashmiri Jewelry item by ID
-exports.getKashmiriJewelryById = async (req, res) => {
+exports.getKashmiriJewelryById = asyncHandler(async (req, res) => {
     try {
         const jewelry = await KashmiriJewelry.findById(req.params.id);
         if (!jewelry) {
@@ -35,10 +36,10 @@ exports.getKashmiriJewelryById = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Update a Kashmiri Jewelry item by ID
-exports.updateKashmiriJewelry = async (req, res) => {
+exports.updateKashmiriJewelry = asyncHandler(async (req, res) => {
     try {
         const jewelry = await KashmiriJewelry.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!jewelry) {
@@ -48,10 +49,10 @@ exports.updateKashmiriJewelry = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Delete a Kashmiri Jewelry item by ID
-exports.deleteKashmiriJewelry = async (req, res) => {
+exports.deleteKashmiriJewelry = asyncHandler(async (req, res) => {
     try {
         const jewelry = await KashmiriJewelry.findByIdAndDelete(req.params.id);
         if (!jewelry) {
@@ -61,4 +62,4 @@ exports.deleteKashmiriJewelry = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});

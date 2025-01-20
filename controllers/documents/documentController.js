@@ -1,10 +1,10 @@
 const Document = require('../../models/Documents/document');
 const fs = require('fs');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // @desc Upload a document
 // @route POST /api/documents
-exports.uploadDocument = async (req, res) => {
-  try {
+exports.uploadDocument = asyncHandler(async (req, res) => {
     const { file } = req;
     if (!file) {
       return res.status(400).json({
@@ -26,38 +26,24 @@ exports.uploadDocument = async (req, res) => {
       message: 'Document uploaded successfully',
       data: savedDocument,
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error uploading document',
-      error: error.message,
-    });
-  }
-};
+  
+});
 
 // @desc Get all documents
 // @route GET /api/documents
-exports.getAllDocuments = async (req, res) => {
-  try {
+exports.getAllDocuments =asyncHandler( async (req, res) => {
     const documents = await Document.find();
     res.status(200).json({
       success: true,
       message: 'Documents fetched successfully',
       data: documents,
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching documents',
-      error: error.message,
-    });
-  }
-};
+ 
+});
 
 // @desc Delete a document
 // @route DELETE /api/documents/:id
-exports.deleteDocument = async (req, res) => {
-  try {
+exports.deleteDocument = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const document = await Document.findById(id);
 
@@ -75,11 +61,5 @@ exports.deleteDocument = async (req, res) => {
       success: true,
       message: 'Document deleted successfully',
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error deleting document',
-      error: error.message,
-    });
-  }
-};
+  
+});

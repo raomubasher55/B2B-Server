@@ -1,8 +1,8 @@
 const Papermachieware = require('../../models/diningServingWare/Papermachieware');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create Papermachieware item
-exports.createPapermachieware = async (req, res) => {
-  try {
+exports.createPapermachieware = asyncHandler(async (req, res) => {
     const newPapermachieware = new Papermachieware({
       ...req.body,
       userId: req.user.user._id,
@@ -13,33 +13,21 @@ exports.createPapermachieware = async (req, res) => {
       message: 'Papermachieware item created successfully',
       data: newPapermachieware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Get all Papermachieware items
-exports.getAllPapermachieware = async (req, res) => {
-  try {
+exports.getAllPapermachieware = asyncHandler(async (req, res) => {
     const papermachieware = await Papermachieware.find();
     res.status(200).json({
       success: true,
       data: papermachieware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});
 
 // Get Papermachieware item by ID
-exports.getPapermachiewareById = async (req, res) => {
-  try {
+exports.getPapermachiewareById = asyncHandler(async (req, res) => {
     const papermachieware = await Papermachieware.findById(req.params.id);
     if (!papermachieware) {
       return res.status(404).json({
@@ -51,17 +39,11 @@ exports.getPapermachiewareById = async (req, res) => {
       success: true,
       data: papermachieware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Update Papermachieware item
-exports.updatePapermachieware = async (req, res) => {
-  try {
+exports.updatePapermachieware =asyncHandler( async (req, res) => {
     const updatedPapermachieware = await Papermachieware.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -78,17 +60,11 @@ exports.updatePapermachieware = async (req, res) => {
       message: 'Papermachieware item updated successfully',
       data: updatedPapermachieware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Delete Papermachieware item
-exports.deletePapermachieware = async (req, res) => {
-  try {
+exports.deletePapermachieware = asyncHandler(async (req, res) => {
     const deletedPapermachieware = await Papermachieware.findByIdAndDelete(req.params.id);
     if (!deletedPapermachieware) {
       return res.status(404).json({
@@ -100,10 +76,5 @@ exports.deletePapermachieware = async (req, res) => {
       success: true,
       message: 'Papermachieware item deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});

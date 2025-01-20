@@ -1,8 +1,8 @@
 const Enamelware = require('../../models/diningServingWare/enamelware');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create Enamelware item
-exports.createEnamelware = async (req, res) => {
-  try {
+exports.createEnamelware = asyncHandler(async (req, res) => {
     const newEnamelware = new Enamelware({
       ...req.body,
       userId: req.user.user._id,
@@ -13,33 +13,21 @@ exports.createEnamelware = async (req, res) => {
       message: 'Enamelware item created successfully',
       data: newEnamelware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Get all Enamelware items
-exports.getAllEnamelware = async (req, res) => {
-  try {
+exports.getAllEnamelware =asyncHandler( async (req, res) => {
     const enamelware = await Enamelware.find();
     res.status(200).json({
       success: true,
       data: enamelware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});
 
 // Get Enamelware item by ID
-exports.getEnamelwareById = async (req, res) => {
-  try {
+exports.getEnamelwareById = asyncHandler(async (req, res) => {
     const enamelware = await Enamelware.findById(req.params.id);
     if (!enamelware) {
       return res.status(404).json({
@@ -51,17 +39,11 @@ exports.getEnamelwareById = async (req, res) => {
       success: true,
       data: enamelware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Update Enamelware item
-exports.updateEnamelware = async (req, res) => {
-  try {
+exports.updateEnamelware = asyncHandler(async (req, res) => {
     const updatedEnamelware = await Enamelware.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -78,17 +60,11 @@ exports.updateEnamelware = async (req, res) => {
       message: 'Enamelware item updated successfully',
       data: updatedEnamelware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Delete Enamelware item
-exports.deleteEnamelware = async (req, res) => {
-  try {
+exports.deleteEnamelware = asyncHandler(async (req, res) => {
     const deletedEnamelware = await Enamelware.findByIdAndDelete(req.params.id);
     if (!deletedEnamelware) {
       return res.status(404).json({
@@ -100,10 +76,5 @@ exports.deleteEnamelware = async (req, res) => {
       success: true,
       message: 'Enamelware item deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});

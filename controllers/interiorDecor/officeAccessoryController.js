@@ -1,8 +1,8 @@
 const OfficeAccessory = require('../../models/interiorDecor/OfficeAccessory');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new office accessory
-exports.createOfficeAccessory = async (req, res) => {
-  try {
+exports.createOfficeAccessory = asyncHandler(async (req, res) => {
     const newOfficeAccessory = new OfficeAccessory({
       ...req.body,
       userId: req.user.user._id,
@@ -13,33 +13,21 @@ exports.createOfficeAccessory = async (req, res) => {
       message: 'Office Accessory created successfully',
       data: newOfficeAccessory
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+
+});
 
 // Get all office accessories
-exports.getAllOfficeAccessories = async (req, res) => {
-  try {
+exports.getAllOfficeAccessories = asyncHandler(async (req, res) => {
     const officeAccessories = await OfficeAccessory.find();
     res.status(200).json({
       success: true,
       data: officeAccessories
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+
+});
 
 // Get office accessory by ID
-exports.getOfficeAccessoryById = async (req, res) => {
-  try {
+exports.getOfficeAccessoryById =asyncHandler( async (req, res) => {
     const officeAccessory = await OfficeAccessory.findById(req.params.id);
     if (!officeAccessory) {
       return res.status(404).json({
@@ -51,17 +39,11 @@ exports.getOfficeAccessoryById = async (req, res) => {
       success: true,
       data: officeAccessory
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+
+});
 
 // Update office accessory
 exports.updateOfficeAccessory = async (req, res) => {
-  try {
     const updatedOfficeAccessory = await OfficeAccessory.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -78,17 +60,11 @@ exports.updateOfficeAccessory = async (req, res) => {
       message: 'Office Accessory updated successfully',
       data: updatedOfficeAccessory
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
+
 };
 
 // Delete office accessory
-exports.deleteOfficeAccessory = async (req, res) => {
-  try {
+exports.deleteOfficeAccessory = asyncHandler(async (req, res) => {
     const deletedOfficeAccessory = await OfficeAccessory.findByIdAndDelete(req.params.id);
     if (!deletedOfficeAccessory) {
       return res.status(404).json({
@@ -100,10 +76,5 @@ exports.deleteOfficeAccessory = async (req, res) => {
       success: true,
       message: 'Office Accessory deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+
+});

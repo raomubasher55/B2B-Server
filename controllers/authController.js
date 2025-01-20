@@ -6,60 +6,65 @@ const jwt = require('jsonwebtoken');
 const randomString = require('randomstring');
 const { deleteFile } = require('../helper/deleteFile');
 const path = require('path');
+const asyncHandler = require('../utils/asyncHandler');
+const { sendVerificationEmail } = require('../services/globalMail.service');
+const ApiError = require('../utils/ApiError');
+const crypto = require('crypto');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY); 
 
 
-
- 
-
 //siginup user
-const signupUser = async (req, res) => {
-    try {
-
+const signupUser =asyncHandler (async (req, res) => {
         //Express  validation 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(200).json({
-                success: false,
-                msg: 'Errors',
-                errors: errors.array()
-            })
+            return res.status(400).json({errors: errors.array()});
         }
-
         const { name, email, password, mobile } = req.body;
         const isExistUser = await userModel.findOne({ email });
         if (isExistUser) {
-            return res.status(200).json({
-                success: false,
-                msg: "Email already registered"
-            });
-        }
-
+           throw new ApiError(400 , 'Email already Registered');
+          }
         const hashPassword = await bcrypt.hash(password, 10);
-        const user = new userModel({
-            name,
-            email,
-            password: hashPassword,
-            mobile,
-        });
-        const userData = await user.save();
+        const user = new userModel({ name,email,password: hashPassword,mobile,});
+        const token =  user.generateVerificationToken();
+        console.log(token)
+        await user.save();
+        sendVerificationEmail(user , token );
+        return res.status(200).json({ message: "Please check your email and verify your account."});
+});
+
+const verifyEmail = asyncHandler(async(req,res)=>{
+  const {token} = req.query;
+  if(!token){
+    throw new ApiError(404,'Token not Found');
+  }
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  console.log(hashedToken);
+  const user = await userModel.findOne({ emailVerificationToken: hashedToken });
+  if (!user) {
+     throw new ApiError(404 , 'User Not Found');
+  }
+  user.isVerified = 1;
+  user.emailVerificationToken = undefined; 
+  await user.save();
+  return res.status(200).json({ message: 'Email verified successfully' });
+})
 
 
-        return res.status(200).json({
-            success: true,
-            msg: "Your Account is created is successfuly",
-            data: userData
-        });
+const googleLoginCallback = asyncHandler((req, res) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+  
+  // Optionally you can issue your own JWT or create a session for the user
+  res.redirect('/dashboard'); // Redirect after successful login
+});
 
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            msg: error.message,
-        })
-    }
-}
-
-
+const loadAuth = (req, res) => {
+  res.render("auth");
+};
 
 
 
@@ -68,10 +73,7 @@ const gernateAccessToken = async (user) => {
     return token;
 }
 
-
-//loin user
-const loginUser = async (req, res) => {
-    try {
+const loginUser = asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(200).json({
@@ -116,37 +118,17 @@ const loginUser = async (req, res) => {
             accessToken: accessToken,
             tokenType: "Bearer"
         })
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            msg: error.message,
-        })
-    }
-}
+   });
 
-//Profile
-const userProfile = async (req, res) => {
-    try {
-
+const userProfile = asyncHandler(async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "User Profile  Data",
             data: req.user
         })
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            msg: error.message,
-        })
-    }
-}
+ });
 
-
-
-// KPI Data
-const KPIData = async(req, res)=>{
-    try {
-
+const KPIData = asyncHandler(async(req, res)=>{
         return res.status(200).json({
             success: true,
             message: "User Level  Data",
@@ -155,17 +137,9 @@ const KPIData = async(req, res)=>{
             package: req.user.package,
             paymentStatus: req.user.paymentStatus
         })
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            msg: error.message,
-        })
-    } 
-}
+    })
 
-// Controller to update level
-const updateUserLevel = async (req, res) => {
-  try {
+const updateUserLevel = asyncHandler(async (req, res) => {
     const { userId } = req.params; // Get user ID from request parameters
     const { level } = req.body; // Get level from request body
 
@@ -195,16 +169,9 @@ const updateUserLevel = async (req, res) => {
       message: "User level updated successfully.",
       user: updatedUser,
     });
-  } catch (error) {
-    console.error("Error updating user level:", error);
-    res.status(500).json({
-      error: "An error occurred while updating the user's level.",
-    });
-  }
-};
+});
 
-const updateUserScore = async (req, res) => {
-    try {
+const updateUserScore = asyncHandler(async (req, res) => {
       const { userId } = req.params; // Get user ID from request parameters
       const { score } = req.body; // Get score from request body
   
@@ -226,17 +193,9 @@ const updateUserScore = async (req, res) => {
         message: "User score updated successfully.",
         user: updatedUser,
       });
-    } catch (error) {
-      console.error("Error updating user score:", error);
-      res.status(500).json({
-        error: "An error occurred while updating the user's score.",
-      });
-    }
-  };
+   });
   
-
-  const handlePaymentAndUpdate = async (req, res) => {
-    try {
+  const handlePaymentAndUpdate = asyncHandler(async (req, res) => {
       const { userId } = req.params; 
       const { package: userPackage, paymentMethodId } = req.body;
   
@@ -282,27 +241,9 @@ const updateUserScore = async (req, res) => {
         message: "Payment successful and user updated.",
         user,
       });
-    } catch (error) {
-      console.error("Error handling payment and updating user:", error);
+    });
   
-      // Handle Stripe-specific errors
-      if (error.type === "StripeCardError") {
-        return res.status(400).json({
-          error: error.message,
-        });
-      }
-  
-      res.status(500).json({
-        error: "An error occurred while processing the payment and updating the user.",
-      });
-    }
-  };
-  
-
-
-//update Profile
-const updateProfile = async (req, res) => {
-    try {
+const updateProfile = asyncHandler(async (req, res) => {
         const { name, mobile } = req.body;
 
         const data = { name, mobile, }
@@ -324,17 +265,9 @@ const updateProfile = async (req, res) => {
             message: "User Data updated successfully",
             data: userData
         })
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
+  })
 
-//logout
-const logout = async (req, res) => {
-    try {
+const logout = asyncHandler(async (req, res) => {
         const token = req.body.token || req.query.token || req.headers['authorization'];
         
         if (!token) {
@@ -358,13 +291,7 @@ const logout = async (req, res) => {
             success: true,
             message: "You are logged out"
         });
-    } catch (error) {
-        return res.status(400).json({
-            success: false,
-            message: error.message
-        });
-    }
-};
+});
 
 
 
@@ -377,5 +304,8 @@ module.exports = {
     KPIData,
     updateUserScore, 
     updateUserLevel,
-    handlePaymentAndUpdate
+    handlePaymentAndUpdate,
+    verifyEmail,
+    googleLoginCallback,
+    loadAuth
 }

@@ -1,7 +1,8 @@
 const KashmiriPheran = require('../../models/Boutique/kashmiriPheran');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new Kashmiri Pheran
-exports.createKashmiriPheran = async (req, res) => {
+exports.createKashmiriPheran =asyncHandler( async (req, res) => {
     try {
         const kashmiriPheran = new KashmiriPheran({
             ...req.body,
@@ -12,20 +13,20 @@ exports.createKashmiriPheran = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get all Kashmiri Pherans
-exports.getAllKashmiriPherans = async (req, res) => {
+exports.getAllKashmiriPherans = asyncHandler(async (req, res) => {
     try {
         const pherans = await KashmiriPheran.find();
         res.status(200).json({ success: true, data: pherans });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get a single Kashmiri Pheran by ID
-exports.getKashmiriPheranById = async (req, res) => {
+exports.getKashmiriPheranById = asyncHandler(async (req, res) => {
     try {
         const pheran = await KashmiriPheran.findById(req.params.id);
         if (!pheran) {
@@ -35,10 +36,10 @@ exports.getKashmiriPheranById = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Update a Kashmiri Pheran by ID
-exports.updateKashmiriPheran = async (req, res) => {
+exports.updateKashmiriPheran = asyncHandler(async (req, res) => {
     try {
         const pheran = await KashmiriPheran.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!pheran) {
@@ -48,10 +49,10 @@ exports.updateKashmiriPheran = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Delete a Kashmiri Pheran by ID
-exports.deleteKashmiriPheran = async (req, res) => {
+exports.deleteKashmiriPheran = asyncHandler(async (req, res) => {
     try {
         const pheran = await KashmiriPheran.findByIdAndDelete(req.params.id);
         if (!pheran) {
@@ -61,4 +62,4 @@ exports.deleteKashmiriPheran = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});

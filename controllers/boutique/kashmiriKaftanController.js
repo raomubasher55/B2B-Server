@@ -1,7 +1,8 @@
 const KashmiriKaftan = require('../../models/Boutique/KashmiriKaftan');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new Kashmiri Kaftan
-exports.createKashmiriKaftan = async (req, res) => {
+exports.createKashmiriKaftan = asyncHandler(async (req, res) => {
     try {
         const kashmiriKaftan = new KashmiriKaftan({
             ...req.body,
@@ -12,20 +13,20 @@ exports.createKashmiriKaftan = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get all Kashmiri Kaftans
-exports.getAllKashmiriKaftans = async (req, res) => {
+exports.getAllKashmiriKaftans = asyncHandler(async (req, res) => {
     try {
         const kaftans = await KashmiriKaftan.find();
         res.status(200).json({ success: true, data: kaftans });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get a single Kashmiri Kaftan by ID
-exports.getKashmiriKaftanById = async (req, res) => {
+exports.getKashmiriKaftanById = asyncHandler(async (req, res) => {
     try {
         const kaftan = await KashmiriKaftan.findById(req.params.id);
         if (!kaftan) {
@@ -35,10 +36,10 @@ exports.getKashmiriKaftanById = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Update a Kashmiri Kaftan by ID
-exports.updateKashmiriKaftan = async (req, res) => {
+exports.updateKashmiriKaftan = asyncHandler(async (req, res) => {
     try {
         const kaftan = await KashmiriKaftan.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!kaftan) {
@@ -48,10 +49,10 @@ exports.updateKashmiriKaftan = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Delete a Kashmiri Kaftan by ID
-exports.deleteKashmiriKaftan = async (req, res) => {
+exports.deleteKashmiriKaftan = asyncHandler(async (req, res) => {
     try {
         const kaftan = await KashmiriKaftan.findByIdAndDelete(req.params.id);
         if (!kaftan) {
@@ -61,4 +62,4 @@ exports.deleteKashmiriKaftan = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});

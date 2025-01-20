@@ -1,8 +1,8 @@
 const GrandFoyerRug = require('../../models/RugsAndCarpets/GrandFoyerRug');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new rug
-const createRug = async (req, res) => {
-    try {
+const createRug = asyncHandler(async (req, res) => {
         const newRug = new GrandFoyerRug({
             ...req.body,
             userId: req.user.user._id,
@@ -13,37 +13,21 @@ const createRug = async (req, res) => {
             message: 'Grand Foyer Rug created successfully',
             rug: newRug
         });
-    } catch (error) {
-        if (error.name === 'ValidationError') {
-            const errorMessages = Object.values(error.errors).map(err => err.message);
-            res.status(400).json({
-                success: false,
-                message: 'Validation error occurred',
-                errors: errorMessages
-            });
-        } else {
-            res.status(500).json({ success: false, message: 'Error creating rug', error });
-        }
-    }
-};
+});
 
 // Get all rugs
-const getAllRugs = async (req, res) => {
-    try {
+const getAllRugs = asyncHandler(async (req, res) => {
         const rugs = await GrandFoyerRug.find();
         res.status(200).json({
             success: true,
             message: 'Rugs fetched successfully',
             rugs
         });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error fetching rugs', error });
-    }
-};
+    
+});
 
 // Get a specific rug by ID
-const getRugById = async (req, res) => {
-    try {
+const getRugById = asyncHandler(async (req, res) => {
         const rug = await GrandFoyerRug.findById(req.params.id);
         if (!rug) {
             return res.status(404).json({ success: false, message: 'Rug not found' });
@@ -53,14 +37,11 @@ const getRugById = async (req, res) => {
             message: 'Rug fetched successfully',
             rug
         });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error fetching rug', error });
-    }
-};
+    
+});
 
 // Update a rug
-const updateRug = async (req, res) => {
-    try {
+const updateRug =asyncHandler( async (req, res) => {
         const rug = await GrandFoyerRug.findById(req.params.id);
         if (!rug) {
             return res.status(404).json({ success: false, message: 'Rug not found' });
@@ -71,14 +52,11 @@ const updateRug = async (req, res) => {
             message: 'Rug updated successfully',
             rug
         });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error updating rug', error });
-    }
-};
+   
+});
 
 // Delete a rug
-const deleteRug = async (req, res) => {
-    try {
+const deleteRug = asyncHandler(async (req, res) => {
         const rug = await GrandFoyerRug.findByIdAndDelete(req.params.id);
         if (!rug) {
             return res.status(404).json({ success: false, message: 'Rug not found' });
@@ -87,9 +65,7 @@ const deleteRug = async (req, res) => {
             success: true,
             message: 'Rug deleted successfully'
         });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error deleting rug', error });
-    }
-};
+
+});
 
 module.exports = { createRug, getAllRugs, getRugById, updateRug, deleteRug };

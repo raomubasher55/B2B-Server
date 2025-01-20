@@ -1,8 +1,8 @@
 const Silverware = require('../../models/diningServingWare/Silverware');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new Silverware item
-exports.createSilverware = async (req, res) => {
-  try {
+exports.createSilverware = asyncHandler(async (req, res) => {
     const newSilverware = new Silverware({
       ...req.body,
       userId: req.user.user._id,
@@ -13,33 +13,21 @@ exports.createSilverware = async (req, res) => {
       message: 'Silverware created successfully',
       data: newSilverware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});
 
 // Get all Silverware items
-exports.getAllSilverware = async (req, res) => {
-  try {
+exports.getAllSilverware = asyncHandler(async (req, res) => {
     const silverware = await Silverware.find();
     res.status(200).json({
       success: true,
       data: silverware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+
+});
 
 // Get Silverware item by ID
-exports.getSilverwareById = async (req, res) => {
-  try {
+exports.getSilverwareById = asyncHandler(async (req, res) => {
     const silverware = await Silverware.findById(req.params.id);
     if (!silverware) {
       return res.status(404).json({
@@ -51,17 +39,11 @@ exports.getSilverwareById = async (req, res) => {
       success: true,
       data: silverware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Update Silverware item
-exports.updateSilverware = async (req, res) => {
-  try {
+exports.updateSilverware = asyncHandler(async (req, res) => {
     const updatedSilverware = await Silverware.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -78,17 +60,11 @@ exports.updateSilverware = async (req, res) => {
       message: 'Silverware item updated successfully',
       data: updatedSilverware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Delete Silverware item
-exports.deleteSilverware = async (req, res) => {
-  try {
+exports.deleteSilverware = asyncHandler(async (req, res) => {
     const deletedSilverware = await Silverware.findByIdAndDelete(req.params.id);
     if (!deletedSilverware) {
       return res.status(404).json({
@@ -100,10 +76,5 @@ exports.deleteSilverware = async (req, res) => {
       success: true,
       message: 'Silverware item deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});

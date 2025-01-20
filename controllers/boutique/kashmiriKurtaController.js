@@ -1,7 +1,8 @@
 const KashmiriKurta = require('../../models/Boutique/kashmiriKurta');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new Kashmiri Kurta
-exports.createKashmiriKurta = async (req, res) => {
+exports.createKashmiriKurta = asyncHandler(async (req, res) => {
     try {
         const kashmiriKurta = new KashmiriKurta({
             ...req.body,
@@ -12,20 +13,20 @@ exports.createKashmiriKurta = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get all Kashmiri Kurtas
-exports.getAllKashmiriKurtas = async (req, res) => {
+exports.getAllKashmiriKurtas =asyncHandler( async (req, res) => {
     try {
         const kurtas = await KashmiriKurta.find();
         res.status(200).json({ success: true, data: kurtas });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get a single Kashmiri Kurta by ID
-exports.getKashmiriKurtaById = async (req, res) => {
+exports.getKashmiriKurtaById =asyncHandler( async (req, res) => {
     try {
         const kurta = await KashmiriKurta.findById(req.params.id);
         if (!kurta) {
@@ -35,10 +36,10 @@ exports.getKashmiriKurtaById = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Update a Kashmiri Kurta by ID
-exports.updateKashmiriKurta = async (req, res) => {
+exports.updateKashmiriKurta = asyncHandler(async (req, res) => {
     try {
         const kurta = await KashmiriKurta.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!kurta) {
@@ -48,10 +49,10 @@ exports.updateKashmiriKurta = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Delete a Kashmiri Kurta by ID
-exports.deleteKashmiriKurta = async (req, res) => {
+exports.deleteKashmiriKurta = asyncHandler(async (req, res) => {
     try {
         const kurta = await KashmiriKurta.findByIdAndDelete(req.params.id);
         if (!kurta) {
@@ -61,4 +62,4 @@ exports.deleteKashmiriKurta = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});

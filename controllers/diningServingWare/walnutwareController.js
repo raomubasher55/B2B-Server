@@ -1,8 +1,8 @@
 const Walnutware = require('../../models/diningServingWare/Walnutware');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create Walnutware item
-exports.createWalnutware = async (req, res) => {
-  try {
+exports.createWalnutware = asyncHandler(async (req, res) => {
     const newWalnutware = new Walnutware({
       ...req.body,
       userId: req.user.user._id,
@@ -13,33 +13,21 @@ exports.createWalnutware = async (req, res) => {
       message: 'Walnutware item created successfully',
       data: newWalnutware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Get all Walnutware items
-exports.getAllWalnutware = async (req, res) => {
-  try {
+exports.getAllWalnutware = asyncHandler(async (req, res) => {
     const walnutware = await Walnutware.find();
     res.status(200).json({
       success: true,
       data: walnutware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Get Walnutware item by ID
-exports.getWalnutwareById = async (req, res) => {
-  try {
+exports.getWalnutwareById =asyncHandler( async (req, res) => {
     const walnutware = await Walnutware.findById(req.params.id);
     if (!walnutware) {
       return res.status(404).json({
@@ -51,17 +39,11 @@ exports.getWalnutwareById = async (req, res) => {
       success: true,
       data: walnutware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});
 
 // Update Walnutware item
-exports.updateWalnutware = async (req, res) => {
-  try {
+exports.updateWalnutware = asyncHandler(async (req, res) => {
     const updatedWalnutware = await Walnutware.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -78,17 +60,11 @@ exports.updateWalnutware = async (req, res) => {
       message: 'Walnutware item updated successfully',
       data: updatedWalnutware
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Delete Walnutware item
-exports.deleteWalnutware = async (req, res) => {
-  try {
+exports.deleteWalnutware = asyncHandler(async (req, res) => {
     const deletedWalnutware = await Walnutware.findByIdAndDelete(req.params.id);
     if (!deletedWalnutware) {
       return res.status(404).json({
@@ -100,10 +76,5 @@ exports.deleteWalnutware = async (req, res) => {
       success: true,
       message: 'Walnutware item deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});

@@ -1,7 +1,8 @@
 const CigarRoomRug = require('../../models/RugsAndCarpets/CigarRoomRug');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new rug
-const createRug = async (req, res) => {
+const createRug = asyncHandler(async (req, res) => {
     try {
         const newRug = new CigarRoomRug({
             ...req.body,
@@ -25,10 +26,10 @@ const createRug = async (req, res) => {
             res.status(500).json({ success: false, message: 'Error creating rug', error });
         }
     }
-};
+});
 
 // Get all rugs
-const getAllRugs = async (req, res) => {
+const getAllRugs = asyncHandler(async (req, res) => {
     try {
         const rugs = await CigarRoomRug.find();
         res.status(200).json({
@@ -39,10 +40,10 @@ const getAllRugs = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error fetching rugs', error });
     }
-};
+});
 
 // Get a specific rug by ID
-const getRugById = async (req, res) => {
+const getRugById = asyncHandler(async (req, res) => {
     try {
         const rug = await CigarRoomRug.findById(req.params.id);
         if (!rug) {
@@ -56,10 +57,10 @@ const getRugById = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error fetching rug', error });
     }
-};
+});
 
 // Update a rug
-const updateRug = async (req, res) => {
+const updateRug = asyncHandler(async (req, res) => {
     try {
         const rug = await CigarRoomRug.findById(req.params.id);
         if (!rug) {
@@ -74,11 +75,10 @@ const updateRug = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error updating rug', error });
     }
-};
+});
 
 // Delete a rug
-const deleteRug = async (req, res) => {
-    try {
+const deleteRug = asyncHandler(async (req, res) => {
         const rug = await CigarRoomRug.findByIdAndDelete(req.params.id);
         if (!rug) {
             return res.status(404).json({ success: false, message: 'Rug not found' });
@@ -87,9 +87,7 @@ const deleteRug = async (req, res) => {
             success: true,
             message: 'Rug deleted successfully'
         });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Error deleting rug', error });
-    }
-};
+   
+});
 
 module.exports = { createRug, getAllRugs, getRugById, updateRug, deleteRug };

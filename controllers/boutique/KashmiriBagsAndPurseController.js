@@ -1,7 +1,8 @@
 const KashmiriBagsAndPurse = require('../../models/Boutique/KashmiriBagsAndPurse');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new KashmiriBagsAndPurse item
-exports.createBag = async (req, res) => {
+exports.createBag = asyncHandler(async (req, res) => {
     try {
         const bag = new KashmiriBagsAndPurse({
             ...req.body,
@@ -12,20 +13,20 @@ exports.createBag = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get all KashmiriBagsAndPurse items
-exports.getAllBags = async (req, res) => {
+exports.getAllBags = asyncHandler(async (req, res) => {
     try {
         const bags = await KashmiriBagsAndPurse.find();
         res.status(200).json({ success: true, data: bags });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Get a single KashmiriBagsAndPurse item by ID
-exports.getBagById = async (req, res) => {
+exports.getBagById = asyncHandler(async (req, res) => {
     try {
         const bag = await KashmiriBagsAndPurse.findById(req.params.id);
         if (!bag) {
@@ -35,10 +36,10 @@ exports.getBagById = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Update a KashmiriBagsAndPurse item by ID
-exports.updateBag = async (req, res) => {
+exports.updateBag = asyncHandler(async (req, res) => {
     try {
         const bag = await KashmiriBagsAndPurse.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!bag) {
@@ -48,10 +49,10 @@ exports.updateBag = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});
 
 // Delete a KashmiriBagsAndPurse item by ID
-exports.deleteBag = async (req, res) => {
+exports.deleteBag = asyncHandler(async (req, res) => {
     try {
         const bag = await KashmiriBagsAndPurse.findByIdAndDelete(req.params.id);
         if (!bag) {
@@ -61,4 +62,4 @@ exports.deleteBag = async (req, res) => {
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
-};
+});

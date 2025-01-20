@@ -1,6 +1,7 @@
 const Boutique = require('../../models/Boutique/Pashmina');
+const asyncHandler = require('../../utils/asyncHandler');
 
-exports.createBoutique = async (req, res) => {
+exports.createBoutique = asyncHandler(async (req, res) => {
     try {
         const boutique = new Boutique({
             ...req.body,
@@ -18,10 +19,10 @@ exports.createBoutique = async (req, res) => {
             error: error.message
         });
     }
-};
+});
 
 // Get all Boutique items
-exports.getAllBoutiques = async (req, res) => {
+exports.getAllBoutiques =asyncHandler( async (req, res) => {
     try {
         const boutiques = await Boutique.find();
         res.status(200).json({
@@ -34,9 +35,9 @@ exports.getAllBoutiques = async (req, res) => {
             error: error.message
         });
     }
-};
+});
 
-exports.getBoutiqueById = async (req, res) => {
+exports.getBoutiqueById = asyncHandler(async (req, res) => {
     try {
         const boutique = await Boutique.findById(req.params.id);
         if (!boutique) {
@@ -55,9 +56,9 @@ exports.getBoutiqueById = async (req, res) => {
             error: error.message
         });
     }
-};
+});
 
-exports.updateBoutique = async (req, res) => {
+exports.updateBoutique = asyncHandler(async (req, res) => {
     try {
         const boutique = await Boutique.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!boutique) {
@@ -77,9 +78,9 @@ exports.updateBoutique = async (req, res) => {
             error: error.message
         });
     }
-};
+});
 
-exports.deleteBoutique = async (req, res) => {
+exports.deleteBoutique = asyncHandler(async (req, res) => {
     try {
         const boutique = await Boutique.findByIdAndDelete(req.params.id);
         if (!boutique) {
@@ -98,4 +99,4 @@ exports.deleteBoutique = async (req, res) => {
             error: error.message
         });
     }
-};
+});

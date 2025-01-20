@@ -1,7 +1,8 @@
 const BedroomRug = require('../../models/RugsAndCarpets/Bedroom');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a Bedroom Rug
-exports.createBedroomRug = async (req, res) => {
+exports.createBedroomRug = asyncHandler(async (req, res) => {
   try {
     const newRug = new BedroomRug({
       ...req.body,
@@ -19,10 +20,10 @@ exports.createBedroomRug = async (req, res) => {
       message: err.message
     });
   }
-};
+});
 
 // Get all Bedroom Rugs
-exports.getAllBedroomRugs = async (req, res) => {
+exports.getAllBedroomRugs = asyncHandler(async (req, res) => {
   try {
     const rugs = await BedroomRug.find();
     res.status(200).json({
@@ -35,10 +36,10 @@ exports.getAllBedroomRugs = async (req, res) => {
       message: err.message
     });
   }
-};
+});
 
 // Get a Bedroom Rug by ID
-exports.getBedroomRugById = async (req, res) => {
+exports.getBedroomRugById =asyncHandler( async (req, res) => {
   try {
     const rug = await BedroomRug.findById(req.params.id);
     if (!rug) {
@@ -57,10 +58,10 @@ exports.getBedroomRugById = async (req, res) => {
       message: err.message
     });
   }
-};
+});
 
 // Update a Bedroom Rug
-exports.updateBedroomRug = async (req, res) => {
+exports.updateBedroomRug = asyncHandler(async (req, res) => {
   try {
     const updatedRug = await BedroomRug.findByIdAndUpdate(
       req.params.id,
@@ -84,11 +85,10 @@ exports.updateBedroomRug = async (req, res) => {
       message: err.message
     });
   }
-};
+});
 
 // Delete a Bedroom Rug
-exports.deleteBedroomRug = async (req, res) => {
-  try {
+exports.deleteBedroomRug = asyncHandler(async (req, res) => {
     const deletedRug = await BedroomRug.findByIdAndDelete(req.params.id);
     if (!deletedRug) {
       return res.status(404).json({
@@ -100,10 +100,5 @@ exports.deleteBedroomRug = async (req, res) => {
       success: true,
       message: 'Bedroom rug deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});

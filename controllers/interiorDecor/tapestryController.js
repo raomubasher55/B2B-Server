@@ -1,8 +1,8 @@
 const Tapestry = require('../../models/interiorDecor/Tapestry');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new tapestry
-exports.createTapestry = async (req, res) => {
-  try {
+exports.createTapestry = asyncHandler(async (req, res) => {
     const newTapestry = new Tapestry({
       ...req.body,
       userId: req.user.user._id,
@@ -13,33 +13,20 @@ exports.createTapestry = async (req, res) => {
       message: 'Tapestry created successfully',
       data: newTapestry
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+
+});
 
 // Get all tapestries
-exports.getAllTapestries = async (req, res) => {
-  try {
+exports.getAllTapestries = asyncHandler(async (req, res) => {
     const tapestries = await Tapestry.find();
     res.status(200).json({
       success: true,
       data: tapestries
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+});
 
 // Get tapestry by ID
-exports.getTapestryById = async (req, res) => {
-  try {
+exports.getTapestryById = asyncHandler(async (req, res) => {
     const tapestry = await Tapestry.findById(req.params.id);
     if (!tapestry) {
       return res.status(404).json({
@@ -51,17 +38,11 @@ exports.getTapestryById = async (req, res) => {
       success: true,
       data: tapestry
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Update tapestry
-exports.updateTapestry = async (req, res) => {
-  try {
+exports.updateTapestry = asyncHandler(async (req, res) => {
     const updatedTapestry = await Tapestry.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -78,17 +59,11 @@ exports.updateTapestry = async (req, res) => {
       message: 'Tapestry updated successfully',
       data: updatedTapestry
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Delete tapestry
-exports.deleteTapestry = async (req, res) => {
-  try {
+exports.deleteTapestry =asyncHandler( async (req, res) => {
     const deletedTapestry = await Tapestry.findByIdAndDelete(req.params.id);
     if (!deletedTapestry) {
       return res.status(404).json({
@@ -100,10 +75,5 @@ exports.deleteTapestry = async (req, res) => {
       success: true,
       message: 'Tapestry deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});

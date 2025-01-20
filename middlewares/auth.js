@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const {default : status} = require('http-status')
 
 const verifyToken = (req, res, next) => {
     const token = req.cookies.token || req.body.token || req.query.token  || req.headers['authorization'];
@@ -16,12 +17,20 @@ const verifyToken = (req, res, next) => {
         const bearerToken = bearer[1];
 
         const decodedData = jwt.verify(bearerToken, process.env.ACCESS_SECRET_TOKEN);
+
         req.user = decodedData;
     } catch (error) {
-        return res.status(401).json({
-            success: false,
-            message: 'Invalid Token'
-        });
+        if (error.name === "TokenExpiredError") {
+            return res.status(status.UNAUTHORIZED).json({
+              message: "Unauthorized: Token has expired",
+              expiredAt: error.expiredAt, 
+            });
+          }
+      
+          return res.status(status.UNAUTHORIZED).json({
+            message: "Unauthorized: Invalid token",
+            error: error.message,
+          });
     }
 
     return next();

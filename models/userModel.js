@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
+const crypto  = require('crypto');
 
 const userSchema = new mongoose.Schema(
   {
+    googleId: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,
@@ -12,7 +16,6 @@ const userSchema = new mongoose.Schema(
     },
     mobile: {
       type: Number,
-      required: true,
     },
     image: {
       type: String,
@@ -20,7 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false, //for google only
     },
     level: {
       type: String,
@@ -35,10 +38,30 @@ const userSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
+      default: "unpaid",
       enum: ["paid", "unpaid"],
     },
+    isVerified:{
+      type:Number,
+      enum : [0,1],
+      default: 0
+    },
+    emailVerificationToken:{
+      type:String,
+    }
   },
   { timestamps: true }
 );
+
+
+userSchema.methods.generateVerificationToken = function () {
+  const token = crypto.randomBytes(32).toString("hex");
+  this.emailVerificationToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  return token; 
+};
 
 module.exports = mongoose.model("User", userSchema);

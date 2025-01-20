@@ -1,8 +1,8 @@
 const JeweledWallHanging = require('../../models/interiorDecor/jeweledWallHanging');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new jeweled wall hanging
-exports.createJeweledWallHanging = async (req, res) => {
-  try {
+exports.createJeweledWallHanging = asyncHandler(async (req, res) => {
     const newJeweledWallHanging = new JeweledWallHanging({
       ...req.body,
       userId: req.user.user._id,
@@ -13,33 +13,21 @@ exports.createJeweledWallHanging = async (req, res) => {
       message: 'Jeweled Wall Hanging created successfully',
       data: newJeweledWallHanging
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Get all jeweled wall hangings
-exports.getAllJeweledWallHangings = async (req, res) => {
-  try {
+exports.getAllJeweledWallHangings = asyncHandler(async (req, res) => {
     const jeweledWallHangings = await JeweledWallHanging.find();
     res.status(200).json({
       success: true,
       data: jeweledWallHangings
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Get jeweled wall hanging by ID
-exports.getJeweledWallHangingById = async (req, res) => {
-  try {
+exports.getJeweledWallHangingById = asyncHandler(async (req, res) => {
     const jeweledWallHanging = await JeweledWallHanging.findById(req.params.id);
     if (!jeweledWallHanging) {
       return res.status(404).json({
@@ -51,17 +39,11 @@ exports.getJeweledWallHangingById = async (req, res) => {
       success: true,
       data: jeweledWallHanging
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});
 
 // Update jeweled wall hanging
-exports.updateJeweledWallHanging = async (req, res) => {
-  try {
+exports.updateJeweledWallHanging = asyncHandler(async (req, res) => {
     const updatedJeweledWallHanging = await JeweledWallHanging.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -78,17 +60,11 @@ exports.updateJeweledWallHanging = async (req, res) => {
       message: 'Jeweled Wall Hanging updated successfully',
       data: updatedJeweledWallHanging
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+  
+});
 
 // Delete jeweled wall hanging
-exports.deleteJeweledWallHanging = async (req, res) => {
-  try {
+exports.deleteJeweledWallHanging = asyncHandler(async (req, res) => {
     const deletedJeweledWallHanging = await JeweledWallHanging.findByIdAndDelete(req.params.id);
     if (!deletedJeweledWallHanging) {
       return res.status(404).json({
@@ -100,10 +76,5 @@ exports.deleteJeweledWallHanging = async (req, res) => {
       success: true,
       message: 'Jeweled Wall Hanging deleted successfully'
     });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
+ 
+});

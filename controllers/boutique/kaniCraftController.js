@@ -1,28 +1,15 @@
 const KaniCraft = require('../../models/Boutique/KaniCraft');
+const asyncHandler = require('../../utils/asyncHandler');
 
 // Create a new KaniCraft item
-exports.createKaniCraft = async (req, res) => {
-    try {
-        const kaniCraft = new KaniCraft({
-            ...req.body,
-            userId: req.user.user._id,
-        });
+exports.createKaniCraft = asyncHandler(async (req, res) => {
+        const kaniCraft = new KaniCraft({...req.body,userId: req.user.user._id});
         await kaniCraft.save();
-        res.status(201).json({
-            success: true,
-            message: "Kani Craft item created successfully",
-            data: kaniCraft
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            error: error.message
-        });
-    }
-};
+        res.status(201).json({success: true,kaniCraft});
+});
 
 // Get all KaniCraft items
-exports.getAllKaniCrafts = async (req, res) => {
+exports.getAllKaniCrafts = asyncHandler(async (req, res) => {
     try {
         const kaniCrafts = await KaniCraft.find();
         res.status(200).json({
@@ -35,10 +22,10 @@ exports.getAllKaniCrafts = async (req, res) => {
             error: error.message
         });
     }
-};
+});
 
 // Get a single KaniCraft item by ID
-exports.getKaniCraftById = async (req, res) => {
+exports.getKaniCraftById = asyncHandler(async (req, res) => {
     try {
         const kaniCraft = await KaniCraft.findById(req.params.id);
         if (!kaniCraft) {
@@ -57,10 +44,10 @@ exports.getKaniCraftById = async (req, res) => {
             error: error.message
         });
     }
-};
+});
 
 // Update a KaniCraft item by ID
-exports.updateKaniCraft = async (req, res) => {
+exports.updateKaniCraft = asyncHandler(async (req, res) => {
     try {
         const kaniCraft = await KaniCraft.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!kaniCraft) {
@@ -80,10 +67,10 @@ exports.updateKaniCraft = async (req, res) => {
             error: error.message
         });
     }
-};
+});
 
 // Delete a KaniCraft item by ID
-exports.deleteKaniCraft = async (req, res) => {
+exports.deleteKaniCraft = asyncHandler(async (req, res) => {
     try {
         const kaniCraft = await KaniCraft.findByIdAndDelete(req.params.id);
         if (!kaniCraft) {
@@ -102,4 +89,4 @@ exports.deleteKaniCraft = async (req, res) => {
             error: error.message
         });
     }
-};
+});
