@@ -1,12 +1,13 @@
 const http = require('http');
-const app = require('./app');
-const connectDB = require('./config/db');
-const port = process.env.PORT || 3000
+const app = require('./app');  
+const connectDB = require('./src/config/db');
+const { initializeCluster } = require('./src/utils/cluster'); 
+const { runLoadTest } = require('./src/utils/loadTest');
 
-const server = http.createServer(app);
 
+initializeCluster(app); 
 connectDB();
 
-server.listen(port , ()=>{
-    console.log('Server is runing on port '+port);
-})
+// setTimeout(() => {
+//     runLoadTest();  
+//   }, 5000);    

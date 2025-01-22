@@ -2,33 +2,36 @@ const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const connectDB = require('./config/db');
-const ApiError = require('./utils/ApiError');
-const { default: status } = require("http-status");
-const  defaultRouter  = require('./routes/defaultRouter');
-const errorHandler = require('./middlewares/errorHandler');
 const session = require('express-session');
 const passport = require('passport');
-const userRoutes = require('./routes/userRoute');
-require('./config/passport')
+const cookieParser = require('cookie-parser');
+const ApiError = require('./src/utils/ApiError');
+const { default: status } = require("http-status");
+const  defaultRouter  = require('./src/routes/defaultRouter');
+const errorHandler = require('./src/middlewares/errorHandler');
+const userRoutes = require('./src/routes/userRoute');
+const morganMiddleware = require('./src/middlewares/morgan.middleware');
+const rateLimiterMiddleware = require('./src/middlewares/rateLimiter.middleware');
+const helmetMiddleware = require('./src/middlewares/helmet.middleware');
+require('./src/config/passport')
 
 const app = express();
 
-connectDB();
-
+app.use(helmetMiddleware());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({ 
     secret: process.env.SESSION_SECRET, 
-    resave: false, 
+    resave: false,  
     saveUninitialized: true 
   }));
   // Initialize Passport
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(morganMiddleware);
+//   app.use(rateLimiterMiddleware.handle.bind(rateLimiterMiddleware));
 
 app.set('view engine' , 'ejs' );
 app.set('views' , './views');

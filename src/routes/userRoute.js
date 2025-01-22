@@ -6,6 +6,7 @@ const passport = require('passport');
 const userController = require('../controllers/authController')
 const {signupValidator, loginValidator , updateProfileValidator } = require('../helper/validator');
 const isLogined = require('../middlewares/auth');
+const rateLimiterMiddleware = require('../middlewares/rateLimiter.middleware');
 
 router.use(express.json());
 
@@ -35,8 +36,18 @@ const storage = multer.diskStorage({
    });
 
 
-  router.post('/register' , upload.single('image') ,signupValidator ,  userController.signupUser )
-  router.post('/login' ,loginValidator ,userController.loginUser );
+   router.post('/register', 
+    rateLimiterMiddleware.handle, 
+    upload.single('image'),       
+    signupValidator,              
+    userController.signupUser      
+  );
+  
+  router.post('/login',
+    rateLimiterMiddleware.handle,   
+    loginValidator,                 
+    userController.loginUser        
+  );
   router.get('/verify-email' , userController.verifyEmail );
   
 
