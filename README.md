@@ -71,6 +71,56 @@
     }
     ```
 
+### Forgot Password
+- **Endpoint:** `/api/v1/forgot-password`
+- **Method:** `POST`
+- **Description:** Initiate password reset process
+- **Request:**
+    ```json
+    {
+        "email": "john.doe@example.com"
+    }
+    ```
+- **Response:**
+    ```json
+    {
+        "message": "Password reset link sent to email"
+    }
+    ```
+
+### Verify Reset Token
+- **Endpoint:** `/api/v1/verify-reset-token`
+- **Method:** `GET`
+- **Description:** Validate password reset token
+- **Request Query Param:**
+    ```
+    ?token=reset_token
+    ```
+- **Response:**
+    ```json
+    {
+        "valid": true
+    }
+    ```
+
+### Reset Password
+- **Endpoint:** `/api/v1/reset-password`
+- **Method:** `POST`
+- **Description:** Set new password after verification
+- **Request:**
+    ```json
+    {
+        "token": "reset_token",
+        "newPassword": "new_secure_password"
+    }
+    ```
+- **Response:**
+    ```json
+    {
+        "message": "Password updated successfully"
+    }
+    ```
+
 ### User Profile
 - **Endpoint:** `/api/v1/profile`
 - **Method:** `GET`
