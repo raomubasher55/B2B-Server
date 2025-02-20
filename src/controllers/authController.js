@@ -1,4 +1,3 @@
-
 const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt');
 const userModel = require('../models/userModel');
@@ -7,7 +6,7 @@ const randomString = require('randomstring');
 const { deleteFile } = require('../helper/deleteFile');
 const path = require('path');
 const asyncHandler = require('../utils/asyncHandler');
-const { sendVerificationEmail } = require('../services/globalMail.service');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/globalMail.service');
 const ApiError = require('../utils/ApiError');
 const crypto = require('crypto');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY); 
@@ -293,7 +292,58 @@ const logout = asyncHandler(async (req, res) => {
         });
 });
 
+// New password reset functionality
+const requestPasswordReset = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await userModel.findOne({ email });
+  
+  if (!user) {
+    throw new ApiError(404, 'User not found with this email');
+  }
 
+  const resetToken = user.generatePasswordResetToken();
+  await user.save();
+  
+  sendPasswordResetEmail(user, resetToken);
+  res.status(200).json({ message: 'Password reset link sent to email' });
+});
+
+const verifyResetToken = asyncHandler(async (req, res) => {
+  const { token } = req.query;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await userModel.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    throw new ApiError(400, 'Invalid or expired token');
+  }
+
+  res.status(200).json({ valid: true });
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await userModel.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    throw new ApiError(400, 'Invalid or expired token');
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  res.status(200).json({ message: 'Password updated successfully' });
+});
 
 module.exports = {
     signupUser,
@@ -307,5 +357,8 @@ module.exports = {
     handlePaymentAndUpdate,
     verifyEmail,
     googleLoginCallback,
-    loadAuth
+    loadAuth,
+    requestPasswordReset,
+    verifyResetToken,
+    resetPassword
 }

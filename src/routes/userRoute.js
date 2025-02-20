@@ -50,6 +50,10 @@ const storage = multer.diskStorage({
   );
   router.get('/verify-email' , userController.verifyEmail );
   
+  // Password reset routes
+  router.post('/forgot-password', rateLimiterMiddleware.handle, userController.requestPasswordReset);
+  router.get('/verify-reset-token', userController.verifyResetToken);
+  router.post('/reset-password', userController.resetPassword);
 
     // google
     router.get("/google", userController.loadAuth );
