@@ -1,5 +1,6 @@
-const RoomDividerScreen = require('../../models/interiorDecor/RoomDividerScreen');
-const asyncHandler = require('../../utils/asyncHandler');
+const RoomDividerScreen = require("../../models/InteriorDecor/RoomDividerScreen");
+
+const asyncHandler = require("../../utils/asyncHandler");
 
 // Create a new room divider screen
 exports.createRoomDividerScreen = asyncHandler(async (req, res) => {
@@ -11,13 +12,13 @@ exports.createRoomDividerScreen = asyncHandler(async (req, res) => {
     await newRoomDividerScreen.save();
     res.status(201).json({
       success: true,
-      message: 'Room Divider Screen created successfully',
-      data: newRoomDividerScreen
+      message: "Room Divider Screen created successfully",
+      data: newRoomDividerScreen,
     });
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 });
@@ -28,34 +29,34 @@ exports.getAllRoomDividerScreens = asyncHandler(async (req, res) => {
     const roomDividerScreens = await RoomDividerScreen.find();
     res.status(200).json({
       success: true,
-      data: roomDividerScreens
+      data: roomDividerScreens,
     });
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 });
 
 // Get a room divider screen by ID
-exports.getRoomDividerScreenById =asyncHandler( async (req, res) => {
+exports.getRoomDividerScreenById = asyncHandler(async (req, res) => {
   try {
     const roomDividerScreen = await RoomDividerScreen.findById(req.params.id);
     if (!roomDividerScreen) {
       return res.status(404).json({
         success: false,
-        message: 'Room Divider Screen not found'
+        message: "Room Divider Screen not found",
       });
     }
     res.status(200).json({
       success: true,
-      data: roomDividerScreen
+      data: roomDividerScreen,
     });
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 });
@@ -71,34 +72,35 @@ exports.updateRoomDividerScreen = asyncHandler(async (req, res) => {
     if (!updatedRoomDividerScreen) {
       return res.status(404).json({
         success: false,
-        message: 'Room Divider Screen not found'
+        message: "Room Divider Screen not found",
       });
     }
     res.status(200).json({
       success: true,
-      message: 'Room Divider Screen updated successfully',
-      data: updatedRoomDividerScreen
+      message: "Room Divider Screen updated successfully",
+      data: updatedRoomDividerScreen,
     });
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 });
 
 // Delete room divider screen
 exports.deleteRoomDividerScreen = asyncHandler(async (req, res) => {
-    const deletedRoomDividerScreen = await RoomDividerScreen.findByIdAndDelete(req.params.id);
-    if (!deletedRoomDividerScreen) {
-      return res.status(404).json({
-        success: false,
-        message: 'Room Divider Screen not found'
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: 'Room Divider Screen deleted successfully'
+  const deletedRoomDividerScreen = await RoomDividerScreen.findByIdAndDelete(
+    req.params.id
+  );
+  if (!deletedRoomDividerScreen) {
+    return res.status(404).json({
+      success: false,
+      message: "Room Divider Screen not found",
     });
- 
+  }
+  res.status(200).json({
+    success: true,
+    message: "Room Divider Screen deleted successfully",
+  });
 });
